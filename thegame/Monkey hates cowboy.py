@@ -1,64 +1,64 @@
-import pygame
+import pygame # pygame library
 from sys import exit # closes any kind of code once it's called
-from random import choice, randint # gives random integer between 2 boundaries 
+from random import choice, randint 
 import random
 
 # Player/Enemies
 
-class Cowboy(pygame.sprite.Sprite):
+class Cowboy(pygame.sprite.Sprite): # Player sprite (Sprite is class that contains a surface and a rectangle, and it can be drawn and updated very easily)
 
    def __init__(self):
       super().__init__()
-      self.image = pygame.image.load('thegame/characters/cowboy_1.png').convert_alpha()
-      self.rect = self.image.get_rect(midbottom = (100,370))
-      self.gravity = 0
-      self.jump_sound = pygame.mixer.Sound("thegame/audio/jump_1.mp3")
-      self.jump_sound.set_volume(0.9)
+      self.image = pygame.image.load('thegame/characters/cowboy_1.png').convert_alpha() # load player image
+      self.rect = self.image.get_rect(midbottom = (100,370)) # create a rectangle around image. 1 argument - cooridates (on screen)
+      self.gravity = 0 # default gravity for player
+      self.jump_sound = pygame.mixer.Sound("thegame/audio/jump_1.mp3") # add sound file to self.variable
+      self.jump_sound.set_volume(0.9) # set volume for the sound
 
    def cowboy_input(self):
-      keys = pygame.key.get_pressed()
-      if keys[pygame.K_SPACE] and self.rect.bottom >= 370:
-         self.gravity = -18
-         self.jump_sound.play()
+      keys = pygame.key.get_pressed() # key.get_pressed = if any key is pressed down
+      if keys[pygame.K_SPACE] and self.rect.bottom >= 370: # if key is space and player rectangle is on ground (ground y axis is 370)
+         self.gravity = -18 # jump mechanics
+         self.jump_sound.play() # play sound effect/audio
 
-   def apply_gravity(self):
+   def apply_gravity(self): 
       self.gravity += 1
       self.rect.y += self.gravity
       if self.rect.bottom >= 370:
          self.rect.bottom = 370
 
    def update(self):
-      self.cowboy_input()
-      self.apply_gravity()
+      self.cowboy_input() # if loop ends, update player
+      self.apply_gravity() # update gravity every next loop
 
-class Obstacle(pygame.sprite.Sprite):
+class Obstacle(pygame.sprite.Sprite): # Obstacle sprite (Sprite is class that contains a surface and a rectangle, and it can be drawn and updated very easily)
    def __init__(self,type):
       super().__init__()
 
       if type == "banana":
          banana_1 = pygame.image.load('thegame/characters/banana_1.png').convert_alpha() # load image of banana
-         banana_2 = pygame.image.load('thegame/characters/banana_2.png').convert_alpha()
-         self.frames = [banana_1, banana_2]
-         y_pos = 270
+         banana_2 = pygame.image.load('thegame/characters/banana_2.png').convert_alpha() # .convert_alpha() to run image smoother (optional)
+         self.frames = [banana_1, banana_2] # add frames of images in one list
+         y_pos = 270 # default y axis position for banana object
       else:
          monkey_1 = pygame.image.load('thegame/characters/monkey_1.png').convert_alpha() # load image of monkey
-         monkey_2 = pygame.image.load('thegame/characters/monkey_2.png').convert_alpha()
-         self.frames =  [monkey_1, monkey_2]
-         y_pos = 370
+         monkey_2 = pygame.image.load('thegame/characters/monkey_2.png').convert_alpha() # .convert_alpha() to run image smoother (optional)
+         self.frames =  [monkey_1, monkey_2]  add frames of images in one list
+         y_pos = 370 # default y axis position for monkey object
 
-      self.animation_index = 0
+      self.animation_index = 0 # default
       self.image = self.frames[self.animation_index]
-      self.rect = self.image.get_rect(midbottom = (random.randint(900,1300), y_pos))
+      self.rect = self.image.get_rect(midbottom = (random.randint(900,1300), y_pos)) # rectangle for image. random.randint to spawn obstacles on random time
 
-   def animation_state(self):
+   def animation_state(self): # animation effect with 2 frames
       self.animation_index += 0.1
       if self.animation_index >= len(self.frames): self.animation_index = 0
       self.image = self.frames[int(self.animation_index)]
 
    def update(self):
-      self.animation_state()
-      self.rect.x -= 6
-      self.destroy()
+      self.animation_state() # update animation every loop
+      self.rect.x -= 6 # move obstacles left (+ to move right)
+      self.destroy() # if obstacle is out of left side, destory it
 
    def destroy(self):
       if self.rect.x <= -100: # if obstacle is out of screen
@@ -89,7 +89,7 @@ def obstacle_movement(obstacle_list):
       obstacle_list = [obstacle for obstacle in obstacle_list if obstacle.x > -100] # list comperhension. if obstacle is out of screen, delete it
       return obstacle_list
    
-   else: return [] # return empty list. important to add to precent AttributeError (NoneType)
+   else: return [] # return empty list. important to add to prevent AttributeError (NoneType)
 
 def collisions(cowboy, obstacles):
    if obstacles:
