@@ -1,3 +1,8 @@
+# Instructions:
+# pip install pygame
+# run code
+
+# Imports
 import pygame # pygame library
 from sys import exit # closes any kind of code once it's called
 from random import choice, randint 
@@ -24,8 +29,8 @@ class Cowboy(pygame.sprite.Sprite): # Player sprite (Sprite is class that contai
    def apply_gravity(self): 
       self.gravity += 1
       self.rect.y += self.gravity
-      if self.rect.bottom >= 370:
-         self.rect.bottom = 370
+      if self.rect.bottom >= 370: # if player hits ground
+         self.rect.bottom = 370 #  spawn it back on ground (to prevent falling out of screen)
 
    def update(self):
       self.cowboy_input() # if loop ends, update player
@@ -181,7 +186,7 @@ while True: # when exit() is called, while True loop will be gone
         if game_active:
 
             if event.type == pygame.MOUSEBUTTONDOWN: # if any key on mouse is pressed down
-               if cowboy_rect.collidepoint(event.pos) and cowboy_rect.bottom >= 370: # if mouse is pressed down and cowboy rectangle is equal to ground y axis
+               if event.key == pygame. and cowboy_rect.bottom >= 370: # if mouse is pressed down and cowboy rectangle is equal to ground y axis
                   cowboy_gravity = -20  
                 
             if event.type == pygame.KEYDOWN: # if any key on keyboard is pressed down
